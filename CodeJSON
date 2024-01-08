@@ -1,0 +1,90 @@
+{
+  "requirements": [
+    "pandas",
+    "matplotlib",
+    "numpy",
+    "pandas-datareader",
+    "yfinance"
+  ],
+  "code": {
+    "import": [
+      "requests",
+      "BeautifulSoup",
+      "yf",
+      "dash",
+      "dcc",
+      "html",
+      "Input",
+      "Output",
+      "go"
+    ],
+    "companies": {
+      "Petrobras": {
+        "ticker": "PETR4.SA",
+        "news_query": "Petrobras"
+      },
+      "Weg": {
+        "ticker": "WEGE3.SA",
+        "news_query": "Weg"
+      },
+      "C&A": {
+        "ticker": "CEAB3.SA",
+        "news_query": "c%26a"
+      }
+    },
+    "dados": "yf.download(company['ticker'], period='1y') for company in companies.values()",
+    "get_news_function": {
+      "description": "Function to fetch news from brazil journal",
+      "code": {
+        "url": "f\"https://braziljournal.com/?s={query}\"",
+        "response_check": "response.status_code == 200",
+        "extraction": {
+          "titles": "soup.select('.boxarticle-infos-title')",
+          "tags": "soup.select('.boxarticle-infos-tag')",
+          "links": "soup.select('.boxarticle-infos-title a')"
+        },
+        "news_extraction": {
+          "loop": "zip(titles[:3], tags[:3], links[:3])",
+          "extract": {
+            "news_title": "title.get_text(strip=True)",
+            "news_tag": "tag.get_text(strip=True)",
+            "news_link": "link.get('href')"
+          },
+          "append": "html.A(f\"{news_tag}: {news_title}\", href=news_link, target='_blank')"
+        }
+      }
+    },
+    "dash_app": {
+      "layout": [
+        {
+          "element": "html.Label('Selecione a empresa:')"
+        },
+        {
+          "element": "dcc.Dropdown("
+                     "id='dropdown',"
+                     "options=[{'label': company, 'value': company} for company in companies.keys()],"
+                     "value='Petrobras'"
+                     ")"
+        },
+        {
+          "element": "dcc.Graph(id='candlestick-chart')"
+        },
+        {
+          "element": "html.Div(id='news-output')"
+        }
+      ],
+      "callbacks": [
+        {
+          "function": "update_chart(selected_company)",
+          "output": "candlestick-chart.figure",
+          "input": "dropdown.value"
+        },
+        {
+          "function": "update_news(selected_company)",
+          "output": "news-output.children",
+          "input": "dropdown.value"
+        }
+      ]
+    }
+  }
+}
