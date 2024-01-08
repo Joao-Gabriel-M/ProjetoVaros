@@ -20,7 +20,7 @@ Dessas informações do Yahoo Finance, apenas os valores de "Open", "High", "Low
 
 O site para a coleta de notícias foi o "https://braziljournal.com/" e foi utilizado o BeautifulSoup para coletar as informações de Tag de categoria das notícias, título das notícias (manchetes) e o link das mesmas, que levasse a uma outra página.
 
-Foi utilizada a biblioteca do Dash para a criação do Dashboard e funcionalidade de um botão dropdown para a escolha das empresas.
+Foi utilizada o framework do Dash para a criação do Dashboard e funcionalidade de um botão dropdown para a escolha das empresas.
 
 O gráfico foi similar ao utilizado no modelo, conhecido como gráfico candlestick. 
 
